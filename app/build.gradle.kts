@@ -56,4 +56,17 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //start
+//Compose ViewModel
+    implementation(libs.compose.viewModel)
+//Gson
+    implementation(libs.gson)
+//Retrofit
+    implementation(libs.retrofit)
+//OkHttpClient
+    implementation(libs.okHttpClient)
+//HttpLoggingInterceptor
+    implementation(libs.httpLoggingInterceptor)
+//end
 }
