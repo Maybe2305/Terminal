@@ -2,6 +2,8 @@ package com.may.terminal.presentation
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.TransformableState
+import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -12,6 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import com.may.terminal.data.Bar
+import kotlin.math.roundToInt
+
+private const val MIN_VISIBLE_BARS_COUNT = 20
 
 @Composable
 fun Terminal(bars: List<Bar>) {
@@ -19,17 +24,24 @@ fun Terminal(bars: List<Bar>) {
         mutableStateOf(100)
     }
 
+    val transformableState = TransformableState { zoomChange, _, _ ->
+        visibleBarsCount = (visibleBarsCount / zoomChange)
+            .roundToInt()
+            .coerceIn(MIN_VISIBLE_BARS_COUNT, bars.size)
+    }
+
     Canvas(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
+            .transformable(transformableState)
     ) {
         val max = bars.maxOf { it.high }
         val min = bars.minOf { it.low }
         val barWidth = size.width / visibleBarsCount
         val pxPerPoint = size.height / (max - min)
         bars.take(visibleBarsCount).forEachIndexed { index, bar ->
-            val offsetX = index * barWidth
+            val offsetX = size.width - index * barWidth
             drawLine(
                 color = Color.White,
                 start = Offset(x = offsetX, y = size.height - ((bar.low - min) * pxPerPoint)),
